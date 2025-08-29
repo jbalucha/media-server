@@ -1,0 +1,33 @@
+########################### NETWORKS
+networks:
+  default:
+    driver: bridge
+  socket_proxy:
+    name: socket_proxy
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.90.0/24
+
+########################### SECRETS
+secrets:
+  plex_claim:
+    file: $DOCKERDIR/secrets/plex_claim
+
+include:
+  ########################### SERVICES
+    - compose/socket-proxy.yml
+    - compose/portainer.yml
+    - compose/dozzle.yml
+    - compose/homepage.yml
+    - compose/plex.yml
+    # - compose/sabnzbd.yml
+    - compose/qbittorrent.yml
+    - compose/radarr.yml
+    - compose/sonarr.yml
+    - compose/bazarr.yml
+    - compose/filebrowser.yml
+    # - compose/docker-gc.yml
+    - compose/prowlarr.yml
+    - compose/flaresolverr.yml
+    - compose/overseerr.yml

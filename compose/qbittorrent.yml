@@ -1,0 +1,33 @@
+services:
+  # qBittorrent - Torrent downloader
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    profiles: ["apps", "downloads", "all"]
+    networks:
+      - default
+    ports:
+      - "$QBITTORRENT_PORT:8080"
+    volumes:
+      - $DOCKERDIR/appdata/qbittorrent:/config
+      - $DOWNLOADSDIR:/data/downloads # Ensure that downloads folder is set to /data/downloads in qBittorrent
+    environment:
+      TZ: $TZ
+      PUID: $PUID
+      PGID: $PGID
+      # QB_WEBUI_PORT: $QBITTORRENT_PORT
+      UMASK_SET: 002
+    labels:
+      - homepage.group=Media
+      - homepage.name=qBittorrent
+      - homepage.icon=qbittorrent.png
+      - homepage.href=http://${HOST_IP}:${QBITTORRENT_PORT}
+      - homepage.description=Torrent Client
+      - homepage.widget.type=qbittorrent
+      - homepage.widget.url=http://${HOST_IP}:${QBITTORRENT_PORT}
+      - homepage.widget.username=${QBITTORRENT_USERNAME}
+      - homepage.widget.password=${QBITTORRENT_PASSWORD}
+      - homepage.widget.enableLeechProgress=true

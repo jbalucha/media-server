@@ -1,0 +1,29 @@
+services:
+  # Overseerr - Movie & TV Show Management
+  overseerr:
+    image: sctx/overseerr:latest
+    container_name: overseerr
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    profiles: ["apps", "all"]
+    networks:
+      - default
+    ports:
+      - "$OVERSEERR_PORT:5055"
+    volumes:
+      - $DOCKERDIR/appdata/overseerr:/app/config
+    environment:
+      TZ: $TZ
+      PUID: $PUID
+      PGID: $PGID
+    labels:
+      - homepage.group=Media
+      - homepage.name=Overseerr
+      - homepage.icon=overseerr.png
+      - homepage.href=http://${HOST_IP}:${OVERSEERR_PORT}
+      - homepage.description=Movie & TV Show Management
+      - homepage.widget.type=overseerr
+      - homepage.widget.url=http://${HOST_IP}:${OVERSEERR_PORT}
+      - homepage.widget.key=${OVERSEERR_API_KEY}
+

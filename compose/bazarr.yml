@@ -1,0 +1,31 @@
+services:
+  # Bazarr - Subtitle Management
+  bazarr:
+    image: lscr.io/linuxserver/bazarr
+    container_name: bazarr
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    profiles: ["media", "starr", "all"]
+    networks:
+      - default
+    ports:
+      - "$BAZARR_PORT:6767"
+    volumes:
+      - $DOCKERDIR/appdata/bazarr:/config
+      - $MEDIADIR:/data/media
+      # - $MEDIADIR2:/data/media2
+      # - $MEDIADIR3:/data/media3
+    environment:
+      TZ: $TZ
+      PUID: $PUID
+      PGID: $PGID
+    labels:
+      - homepage.group=Starr
+      - homepage.name=Bazarr
+      - homepage.icon=bazarr.png
+      - homepage.href=http://${HOST_IP}:${BAZARR_PORT}
+      - homepage.description=Subtitle Management
+      - homepage.widget.type=bazarr
+      - homepage.widget.url=http://${HOST_IP}:${BAZARR_PORT}
+      - homepage.widget.key=${BAZARR_API_KEY}

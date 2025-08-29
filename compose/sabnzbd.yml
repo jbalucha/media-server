@@ -1,0 +1,30 @@
+services:
+  # SABnzbd - Binary newsgrabber (NZB downloader)
+  # Disable SABNnzbd's built-in HTTPS support for traefik proxy to work
+  sabnzbd:
+    image: lscr.io/linuxserver/sabnzbd:latest
+    container_name: sabnzbd
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    profiles: ["apps", "downloads", "all"]
+    networks:
+      - default
+    ports:
+      - "$SABNZBD_PORT:8080"
+    volumes:
+      - $DOCKERDIR/appdata/sabnzbd:/config
+      - $DOWNLOADSDIR:/data/downloads
+    environment:
+      PUID: $PUID
+      PGID: $PGID
+      TZ: $TZ
+      UMASK_SET: 002
+    labels:
+      - homepage.group=Downloads
+      - homepage.name=SABnzbd
+      - homepage.icon=sabnzbd.png
+      - homepage.href=http://${HOST_IP}:${SABNZBD_PORT}
+      - homepage.description=NZB Downloader
+      - homepage.widget.type=sabnzbd
+      - homepage.widget.url=http://${HOST_IP}:${SABNZBD_PORT}

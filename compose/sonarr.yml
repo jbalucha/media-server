@@ -1,0 +1,33 @@
+services:
+  # Sonarr - TV Shows Management
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:develop
+    container_name: sonarr
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    profiles: ["media", "starr", "all"]
+    networks:
+      - default
+    ports:
+      - "$SONARR_PORT:8989"
+    volumes:
+      - $DOCKERDIR/appdata/sonarr:/config
+      - $MEDIADIR:/data/media
+      # - $MEDIADIR2:/data/media2
+      # - $MEDIADIR3:/data/media3
+      - $DOWNLOADSDIR:/data/downloads
+      - "/etc/localtime:/etc/localtime:ro"
+    environment:
+      TZ: $TZ
+      PUID: $PUID
+      PGID: $PGID
+    labels:
+      - homepage.group=Starr
+      - homepage.name=Sonarr
+      - homepage.icon=sonarr.png
+      - homepage.href=http://${HOST_IP}:${SONARR_PORT}
+      - homepage.description=TV Shows Management
+      - homepage.widget.type=sonarr
+      - homepage.widget.url=http://${HOST_IP}:${SONARR_PORT}
+      - homepage.widget.key=${SONARR_API_KEY}

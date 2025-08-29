@@ -1,0 +1,33 @@
+services:
+  # Radarr - Movies Management
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    profiles: ["media", "starr", "all"]
+    networks:
+      - default
+    ports:
+      - "$RADARR_PORT:7878"
+    volumes:
+      - $DOCKERDIR/appdata/radarr:/config
+      - $MEDIADIR:/data/media
+      # - $MEDIADIR2:/data/media2
+      # - $MEDIADIR3:/data/media3
+      - $DOWNLOADSDIR:/data/downloads
+      - "/etc/localtime:/etc/localtime:ro"
+    environment:
+      TZ: $TZ
+      PUID: $PUID
+      PGID: $PGID
+    labels:
+      - homepage.group=Starr
+      - homepage.name=Radarr
+      - homepage.icon=radarr.png
+      - homepage.href=http://${HOST_IP}:${RADARR_PORT}
+      - homepage.description=Movies Management
+      - homepage.widget.type=radarr
+      - homepage.widget.url=http://${HOST_IP}:${RADARR_PORT}
+      - homepage.widget.key=${RADARR_API_KEY}
