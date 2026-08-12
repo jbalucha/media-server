@@ -17,3 +17,8 @@ services:
       TZ: $TZ
       PUID: $PUID
       PGID: $PGID
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.flaresolverr.rule=Host(`flaresolverr.${LOCAL_DOMAIN}`)
+      - traefik.http.routers.flaresolverr.entrypoints=web
+      - traefik.http.services.flaresolverr.loadbalancer.server.port=8191

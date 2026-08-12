@@ -20,3 +20,8 @@ services:
       PGID: $PGID
       # QB_WEBUI_PORT: $QBITTORRENT_PORT
       UMASK: 002
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.qbittorrent.rule=Host(`qbittorrent.${LOCAL_DOMAIN}`)
+      - traefik.http.routers.qbittorrent.entrypoints=web
+      - traefik.http.services.qbittorrent.loadbalancer.server.port=8080

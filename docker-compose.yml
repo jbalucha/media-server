@@ -2,6 +2,9 @@
 networks:
   default:
     driver: bridge
+    # Fixed name so traefik's --providers.docker.network flag is deterministic
+    # regardless of the directory the stack is deployed from
+    name: media-server_default
   socket_proxy:
     name: socket_proxy
     driver: bridge
@@ -18,7 +21,7 @@ include:
   ########################### CORE
   - compose/socket-proxy.yml
   - compose/dnsmasq.yml # Local DNS: *.$LOCAL_DOMAIN -> this host
-  - compose/caddy.yml # Reverse proxy: http://<service>.$LOCAL_DOMAIN
+  - compose/traefik.yml # Reverse proxy: http://<service>.$LOCAL_DOMAIN
   - compose/portainer.yml
   - compose/dozzle.yml
   - compose/homepage.yml

@@ -4,7 +4,7 @@
 #
 # Widgets talk to the services container-to-container (http://<container>:<port>),
 # so no host IPs or published ports are needed. User-facing links use the
-# local DNS domain served by dnsmasq + caddy.
+# local DNS domain served by dnsmasq + traefik.
 # {{HOMEPAGE_VAR_*}} placeholders are resolved from environment variables
 # set on the homepage container (compose/homepage.yml).
 # `server`/`container` entries show live container status via the docker

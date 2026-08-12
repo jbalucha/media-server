@@ -20,3 +20,8 @@ services:
       TZ: $TZ
       PUID: $PUID
       PGID: $PGID
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.bazarr.rule=Host(`bazarr.${LOCAL_DOMAIN}`)
+      - traefik.http.routers.bazarr.entrypoints=web
+      - traefik.http.services.bazarr.loadbalancer.server.port=6767

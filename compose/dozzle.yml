@@ -20,3 +20,8 @@ services:
       - DOCKER_HOST=tcp://socket-proxy:2375
     # volumes:
     #  - /var/run/docker.sock:/var/run/docker.sock # Use Docker Socket Proxy instead for improved security
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.dozzle.rule=Host(`dozzle.${LOCAL_DOMAIN}`)
+      - traefik.http.routers.dozzle.entrypoints=web
+      - traefik.http.services.dozzle.loadbalancer.server.port=8080

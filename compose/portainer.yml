@@ -19,3 +19,8 @@ services:
       - $DOCKERDIR/appdata/portainer/data:/data
     environment:
       - TZ=$TZ
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.portainer.rule=Host(`portainer.${LOCAL_DOMAIN}`)
+      - traefik.http.routers.portainer.entrypoints=web
+      - traefik.http.services.portainer.loadbalancer.server.port=9000

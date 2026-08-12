@@ -18,7 +18,7 @@ services:
       TZ: $TZ
       PUID: $PUID
       PGID: $PGID
-      # Only answer requests addressed to these hosts
+      # Only answer requests addressed to these hosts (via Traefik or direct IP:port)
       HOMEPAGE_ALLOWED_HOSTS: "$LOCAL_DOMAIN,$HOST_IP:$HOMEPAGE_PORT"
       # Secrets for widgets - referenced as {{HOMEPAGE_VAR_*}} in
       # appdata/homepage/services.yaml and settings.yaml. Keeping them here
@@ -34,3 +34,9 @@ services:
       HOMEPAGE_VAR_QBITTORRENT_PASSWORD: ${QBITTORRENT_PASSWORD:-}
       HOMEPAGE_VAR_FINNHUB_API_KEY: ${FINNHUB_API_KEY:-}
       # HOMEPAGE_VAR_PLEX_API_KEY: ${PLEX_API_KEY:-} # X-Plex-Token, for the plex widget
+    labels:
+      - traefik.enable=true
+      # Dashboard on the bare domain
+      - traefik.http.routers.homepage.rule=Host(`${LOCAL_DOMAIN}`)
+      - traefik.http.routers.homepage.entrypoints=web
+      - traefik.http.services.homepage.loadbalancer.server.port=3000

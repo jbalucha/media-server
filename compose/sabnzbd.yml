@@ -20,3 +20,8 @@ services:
       PGID: $PGID
       TZ: $TZ
       UMASK: 002
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.sabnzbd.rule=Host(`sabnzbd.${LOCAL_DOMAIN}`)
+      - traefik.http.routers.sabnzbd.entrypoints=web
+      - traefik.http.services.sabnzbd.loadbalancer.server.port=8080

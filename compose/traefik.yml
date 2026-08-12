@@ -1,0 +1,31 @@
+services:
+  # Traefik - Reverse proxy with Docker auto-discovery
+  # Routes are defined as traefik.* labels on each service (no config file).
+  # Talks to the Docker API only through the socket proxy - never mount the
+  # raw docker socket here.
+  traefik:
+    image: traefik:v3
+    container_name: traefik
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    profiles: ["core", "all"]
+    networks:
+      - default
+      - socket_proxy
+    ports:
+      - "80:80"
+    command:
+      - --providers.docker=true
+      - --providers.docker.endpoint=tcp://socket-proxy:2375
+      - --providers.docker.exposedbydefault=false # only route containers with traefik.enable=true
+      - --providers.docker.network=media-server_default
+      - --entrypoints.web.address=:80
+      - --api.dashboard=true
+      - --log.level=INFO
+    labels:
+      - traefik.enable=true
+      # Dashboard at http://traefik.<domain> (read-only, unauthenticated - LAN only)
+      - traefik.http.routers.traefik.rule=Host(`traefik.${LOCAL_DOMAIN}`)
+      - traefik.http.routers.traefik.entrypoints=web
+      - traefik.http.routers.traefik.service=api@internal

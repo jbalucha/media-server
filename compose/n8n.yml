@@ -45,6 +45,11 @@ services:
     depends_on:
       - postgres
       - redis
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.n8n.rule=Host(`n8n.${LOCAL_DOMAIN}`)
+      - traefik.http.routers.n8n.entrypoints=web
+      - traefik.http.services.n8n.loadbalancer.server.port=5678
 
   n8n-worker:
     <<: *shared

@@ -17,9 +17,6 @@ appdata/homepage/*
 !appdata/dnsmasq/
 appdata/dnsmasq/*
 !appdata/dnsmasq/dnsmasq.conf
-!appdata/caddy/
-appdata/caddy/*
-!appdata/caddy/Caddyfile
 
 # OS noise
 .DS_Store

@@ -24,6 +24,11 @@ services:
       - ${DOWNLOADSDIR}:/downloads
     devices:
       - /dev/dri:/dev/dri  # For Intel QuickSync hardware acceleration
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.tdarr.rule=Host(`tdarr.${LOCAL_DOMAIN}`)
+      - traefik.http.routers.tdarr.entrypoints=web
+      - traefik.http.services.tdarr.loadbalancer.server.port=8265
 
   # Tdarr Node - Worker node for distributed processing
   tdarr-node:

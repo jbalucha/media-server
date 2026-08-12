@@ -8,7 +8,7 @@ with local DNS so every service is reachable by name instead of IP:port.
 - **Media**: Plex (streaming), Overseerr (requests)
 - **Starr**: Sonarr, Radarr, Prowlarr
 - **Downloads**: qBittorrent, FlareSolverr
-- **Local DNS + proxy**: dnsmasq + Caddy — `http://plex.minipc.com` instead of `192.168.1.245:32400`
+- **Local DNS + proxy**: dnsmasq + Traefik — `http://plex.minipc.com` instead of `192.168.1.245:32400`
 - **Dashboard**: Homepage
 - **Ops**: Portainer, Dozzle, File Browser, Docker Socket Proxy
 - Disabled but ready to re-enable: SABnzbd, Bazarr, Tdarr, n8n (+ Postgres/Redis), Docker GC
@@ -66,6 +66,7 @@ with local DNS so every service is reachable by name instead of IP:port.
 | Portainer | http://portainer.minipc.com | :9000 |
 | Dozzle | http://dozzle.minipc.com | :8082 |
 | File Browser | http://files.minipc.com | :8083 |
+| Traefik dashboard | http://traefik.minipc.com | — |
 
 Plex apps (TV, mobile) discover the server directly via port 32400 as usual;
 the proxy hostname is for the web UI.
@@ -83,9 +84,13 @@ the proxy hostname is for the web UI.
   variables on the homepage container only — do not put keys into
   `appdata/homepage/*.yaml` (those files are committed) and do not add
   `homepage.widget.*` docker labels (labels are readable by anything with
-  docker socket access).
+  docker socket access). Traefik routing labels are fine — they contain no
+  secrets.
 - The Docker socket proxy is reachable **only** from the internal
-  `socket_proxy` network. Never publish port 2375 to the host.
+  `socket_proxy` network. Never publish port 2375 to the host. Traefik
+  discovers routes through it (`traefik.*` labels on each service).
+- The Traefik dashboard (http://traefik.minipc.com) is read-only but
+  unauthenticated — LAN only.
 - Dozzle has no authentication — anyone on the LAN can read container logs.
   Keep that in mind for what gets logged, or add authentication
   (https://dozzle.dev/guide/authentication).
