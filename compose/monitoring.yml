@@ -59,10 +59,12 @@ services:
     networks:
       - default
       - socket_proxy
-    command: run --server.http.listen-addr=0.0.0.0:12345 --storage.path=/var/lib/alloy/data /etc/alloy/config.alloy
+    # storage at /data (not the image default /var/lib/alloy/data) - the
+    # image-owned parent dir is not traversable by our non-root user
+    command: run --server.http.listen-addr=0.0.0.0:12345 --storage.path=/data /etc/alloy/config.alloy
     volumes:
       - $DOCKERDIR/appdata/alloy/config.alloy:/etc/alloy/config.alloy:ro
-      - $DOCKERDIR/appdata/alloy/data:/var/lib/alloy/data
+      - $DOCKERDIR/appdata/alloy/data:/data
     depends_on:
       - loki
 
