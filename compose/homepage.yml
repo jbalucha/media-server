@@ -38,6 +38,9 @@ services:
       # dedicated grafana user for the widget (Viewer role is enough)
       HOMEPAGE_VAR_GRAFANA_USERNAME: ${GRAFANA_USERNAME:-}
       HOMEPAGE_VAR_GRAFANA_PASSWORD: ${GRAFANA_PASSWORD:-}
+      HOMEPAGE_VAR_JELLYFIN_API_KEY: ${JELLYFIN_API_KEY:-}
+      HOMEPAGE_VAR_DISPATCHARR_USERNAME: ${DISPATCHARR_USERNAME:-}
+      HOMEPAGE_VAR_DISPATCHARR_PASSWORD: ${DISPATCHARR_PASSWORD:-}
     labels:
       - traefik.enable=true
       # Dashboard on the bare domain
