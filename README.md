@@ -5,7 +5,7 @@ with local DNS so every service is reachable by name instead of IP:port.
 
 ## 🚀 Features
 
-- **Media**: Plex (streaming), Seerr (requests)
+- **Media**: Plex (streaming), Seerr (requests), Jellyfin + Dispatcharr (IPTV live TV)
 - **Starr**: Sonarr, Radarr, Prowlarr
 - **Downloads**: qBittorrent, FlareSolverr
 - **Local DNS + proxy**: dnsmasq + Traefik — `http://plex.janba-minipc.duckdns.org` instead of `192.168.1.245:32400`
@@ -66,6 +66,8 @@ with local DNS so every service is reachable by name instead of IP:port.
 | --- | --- | --- |
 | Homepage | http://janba-minipc.duckdns.org | http://192.168.1.245:3000 |
 | Plex | http://plex.janba-minipc.duckdns.org/web | :32400 |
+| Jellyfin | http://jellyfin.janba-minipc.duckdns.org | :8096 |
+| Dispatcharr | http://dispatcharr.janba-minipc.duckdns.org | :9191 |
 | Seerr (requests) | http://seerr.janba-minipc.duckdns.org (alias: overseerr.) | :5055 |
 | Radarr | http://radarr.janba-minipc.duckdns.org | :7878 |
 | Sonarr | http://sonarr.janba-minipc.duckdns.org | :8989 |

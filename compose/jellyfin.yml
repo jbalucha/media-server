@@ -1,0 +1,32 @@
+services:
+  # Jellyfin - free media server; here mainly the Live TV front-end for
+  # Dispatcharr (watched via the official Jellyfin Xbox app). Also serves
+  # the media library read-only as a Plex alternative.
+  jellyfin:
+    image: lscr.io/linuxserver/jellyfin:latest
+    container_name: jellyfin
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    profiles: ["media", "all"]
+    networks:
+      - default
+    ports:
+      - "$JELLYFIN_PORT:8096"
+      - "7359:7359/udp" # LAN client auto-discovery
+      # no 1900/udp here - Plex already claims it for DLNA
+    devices:
+      - /dev/dri:/dev/dri # Intel QuickSync hardware transcoding
+    volumes:
+      - $DOCKERDIR/appdata/jellyfin:/config
+      - $MEDIADIR:/data/media:ro # read-only: Plex + the *arrs own this tree
+    environment:
+      TZ: $TZ
+      PUID: $PUID
+      PGID: $PGID
+      JELLYFIN_PublishedServerUrl: http://jellyfin.${LOCAL_DOMAIN}
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.jellyfin.rule=Host(`jellyfin.${LOCAL_DOMAIN}`)
+      - traefik.http.routers.jellyfin.entrypoints=web
+      - traefik.http.services.jellyfin.loadbalancer.server.port=8096

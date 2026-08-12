@@ -1,0 +1,29 @@
+services:
+  # Dispatcharr - IPTV playlist manager & stream proxy.
+  # Curates provider M3U/EPG sources and exposes them as an emulated
+  # HDHomeRun tuner + XMLTV guide for Jellyfin's Live TV.
+  # AIO image: PostgreSQL and Redis are bundled inside the container.
+  dispatcharr:
+    image: ghcr.io/dispatcharr/dispatcharr:latest
+    container_name: dispatcharr
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    profiles: ["media", "all"]
+    networks:
+      - default
+    ports:
+      - "$DISPATCHARR_PORT:9191"
+    volumes:
+      - $DOCKERDIR/appdata/dispatcharr:/data
+    environment:
+      - DISPATCHARR_ENV=aio
+      - REDIS_HOST=localhost
+      - CELERY_BROKER_URL=redis://localhost:6379/0
+      - DISPATCHARR_LOG_LEVEL=info
+      - TZ=$TZ
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.dispatcharr.rule=Host(`dispatcharr.${LOCAL_DOMAIN}`)
+      - traefik.http.routers.dispatcharr.entrypoints=web
+      - traefik.http.services.dispatcharr.loadbalancer.server.port=9191

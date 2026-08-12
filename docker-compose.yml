@@ -28,6 +28,8 @@ include:
   - compose/homepage.yml
   ########################### MEDIA
   - compose/plex.yml
+  - compose/jellyfin.yml # Live TV front-end (+ free library access)
+  - compose/dispatcharr.yml # IPTV manager -> emulated tuner for Jellyfin
   - compose/qbittorrent.yml
   - compose/radarr.yml
   - compose/sonarr.yml
