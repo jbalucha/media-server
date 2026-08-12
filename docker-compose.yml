@@ -33,7 +33,7 @@ include:
   - compose/sonarr.yml
   - compose/prowlarr.yml
   - compose/flaresolverr.yml
-  - compose/overseerr.yml
+  - compose/seerr.yml
   ########################### TOOLS
   - compose/filebrowser.yml
   # - compose/sabnzbd.yml

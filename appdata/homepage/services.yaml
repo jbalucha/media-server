@@ -21,16 +21,17 @@
           type: plex
           url: http://plex:32400
           key: "{{HOMEPAGE_VAR_PLEX_API_KEY}}"
-    - Overseerr:
+    - Seerr:
         icon: overseerr.png
-        href: http://overseerr.{{HOMEPAGE_VAR_LOCAL_DOMAIN}}
+        href: http://seerr.{{HOMEPAGE_VAR_LOCAL_DOMAIN}}
         description: Media Requests
         server: my-docker
-        container: overseerr
+        container: seerr
+        # Seerr keeps Overseerr's API, so the overseerr widget type works
         widget:
           type: overseerr
-          url: http://overseerr:5055
-          key: "{{HOMEPAGE_VAR_OVERSEERR_API_KEY}}"
+          url: http://seerr:5055
+          key: "{{HOMEPAGE_VAR_SEERR_API_KEY}}"
 
 - Starr:
     - Radarr:

@@ -1,0 +1,33 @@
+services:
+  # Seerr - Media Requests (successor of Overseerr/Jellyseerr, merged project)
+  # Auto-migrated from the old Overseerr appdata on first start.
+  # Runs as non-root node user (UID 1000) - appdata must be owned 1000:1000.
+  seerr:
+    image: ghcr.io/seerr-team/seerr:latest
+    container_name: seerr
+    init: true # required by the seerr image
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    profiles: ["apps", "all"]
+    networks:
+      - default
+    ports:
+      - "$SEERR_PORT:5055"
+    volumes:
+      - $DOCKERDIR/appdata/seerr:/app/config
+    environment:
+      TZ: $TZ
+      PORT: 5055
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:5055/api/v1/settings/public || exit 1
+      start_period: 20s
+      timeout: 3s
+      interval: 15s
+      retries: 3
+    labels:
+      - traefik.enable=true
+      # overseerr.* kept as an alias so old bookmarks keep working
+      - traefik.http.routers.seerr.rule=Host(`seerr.${LOCAL_DOMAIN}`) || Host(`overseerr.${LOCAL_DOMAIN}`)
+      - traefik.http.routers.seerr.entrypoints=web
+      - traefik.http.services.seerr.loadbalancer.server.port=5055
