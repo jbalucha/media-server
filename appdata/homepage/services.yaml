@@ -17,12 +17,10 @@
         description: Media Server
         server: my-docker
         container: plex
-        # To enable the widget: set PLEX_API_KEY (an X-Plex-Token) in .env and
-        # uncomment HOMEPAGE_VAR_PLEX_API_KEY in compose/homepage.yml, then:
-        # widget:
-        #   type: plex
-        #   url: http://plex:32400
-        #   key: "{{HOMEPAGE_VAR_PLEX_API_KEY}}"
+        widget:
+          type: plex
+          url: http://plex:32400
+          key: "{{HOMEPAGE_VAR_PLEX_API_KEY}}"
     - Overseerr:
         icon: overseerr.png
         href: http://overseerr.{{HOMEPAGE_VAR_LOCAL_DOMAIN}}
