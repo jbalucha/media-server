@@ -35,6 +35,9 @@ services:
       HOMEPAGE_VAR_FINNHUB_API_KEY: ${FINNHUB_API_KEY:-}
       HOMEPAGE_VAR_PLEX_API_KEY: ${PLEX_API_KEY:-} # X-Plex-Token
       HOMEPAGE_VAR_TAILSCALE_API_KEY: ${TAILSCALE_API_KEY:-}
+      # dedicated grafana user for the widget (Viewer role is enough)
+      HOMEPAGE_VAR_GRAFANA_USERNAME: ${GRAFANA_USERNAME:-}
+      HOMEPAGE_VAR_GRAFANA_PASSWORD: ${GRAFANA_PASSWORD:-}
     labels:
       - traefik.enable=true
       # Dashboard on the bare domain
