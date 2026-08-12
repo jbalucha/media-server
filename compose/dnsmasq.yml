@@ -13,7 +13,9 @@ services:
     networks:
       - default
     ports:
-      - "53:53/udp"
-      - "53:53/tcp"
+      # Bind to the LAN IP only - 0.0.0.0:53 would collide with
+      # systemd-resolved's stub listener on 127.0.0.53
+      - "$HOST_IP:53:53/udp"
+      - "$HOST_IP:53:53/tcp"
     volumes:
       - $DOCKERDIR/appdata/dnsmasq/dnsmasq.conf:/etc/dnsmasq.conf:ro
