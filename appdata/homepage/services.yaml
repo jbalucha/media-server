@@ -108,6 +108,19 @@
         description: Web File Manager
         server: my-docker
         container: filebrowser
+    - Tailscale:
+        icon: tailscale.png
+        href: https://login.tailscale.com/admin/machines
+        description: Remote Access VPN
+        server: my-docker
+        container: tailscale
+        # Optional live widget - needs a Tailscale API access token and the
+        # device id from the admin console (see
+        # https://gethomepage.dev/widgets/services/tailscale/):
+        # widget:
+        #   type: tailscale
+        #   deviceid: <device-id>
+        #   key: "{{HOMEPAGE_VAR_TAILSCALE_API_KEY}}"
 
 - Home:
     - Home Assistant:

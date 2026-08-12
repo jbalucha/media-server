@@ -22,6 +22,7 @@ include:
   - compose/socket-proxy.yml
   - compose/dnsmasq.yml # Local DNS: *.$LOCAL_DOMAIN -> this host
   - compose/traefik.yml # Reverse proxy: http://<service>.$LOCAL_DOMAIN
+  - compose/tailscale.yml # Remote access: advertises the LAN into the tailnet
   - compose/portainer.yml
   - compose/dozzle.yml
   - compose/homepage.yml

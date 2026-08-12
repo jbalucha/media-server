@@ -78,6 +78,27 @@ with local DNS so every service is reachable by name instead of IP:port.
 Plex apps (TV, mobile) discover the server directly via port 32400 as usual;
 the proxy hostname is for the web UI.
 
+## 🛰 Remote access (Tailscale)
+
+The stack includes Tailscale as a **subnet router**: it advertises the LAN
+(`192.168.1.0/24`) into your tailnet, so devices running Tailscale reach the
+minipc's LAN IP from anywhere — and all the URLs above keep working
+unchanged. Nothing is exposed to the public internet.
+
+One-time setup:
+
+1. Enable IP forwarding on the host (sudo):
+   `printf 'net.ipv4.ip_forward = 1\nnet.ipv6.conf.all.forwarding = 1\n' | sudo tee /etc/sysctl.d/99-tailscale.conf && sudo sysctl -p /etc/sysctl.d/99-tailscale.conf`
+2. Authenticate the node: set `TS_AUTHKEY` in `.env` before first start, or
+   open the login URL from `docker logs tailscale`.
+3. In the [admin console](https://login.tailscale.com/admin/machines):
+   approve the advertised `192.168.1.0/24` route and **disable key expiry**
+   for the machine.
+4. On your remote devices, make sure "Use subnet routes" is enabled.
+
+Do not use Tailscale Funnel with these services — several of them
+(Dozzle, Prowlarr, the Traefik dashboard) have no authentication.
+
 > **Note**: the DuckDNS record intentionally holds a private IP — it makes
 > the names resolve *inside* the LAN only. Nothing is exposed to the
 > internet: no ports are forwarded, and outsiders resolving the name just
