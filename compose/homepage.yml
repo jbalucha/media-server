@@ -1,0 +1,36 @@
+services:
+  # Homepage - Application Dashboard
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: homepage
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    profiles: ["apps", "all"]
+    networks:
+      - default
+      - socket_proxy
+    ports:
+      - "$HOMEPAGE_PORT:3000"
+    volumes:
+      - $DOCKERDIR/appdata/homepage:/app/config
+    environment:
+      TZ: $TZ
+      PUID: $PUID
+      PGID: $PGID
+      # Only answer requests addressed to these hosts
+      HOMEPAGE_ALLOWED_HOSTS: "$LOCAL_DOMAIN,$HOST_IP:$HOMEPAGE_PORT"
+      # Secrets for widgets - referenced as {{HOMEPAGE_VAR_*}} in
+      # appdata/homepage/services.yaml and settings.yaml. Keeping them here
+      # (instead of docker labels on every container) means they are not
+      # readable via docker inspect on the whole fleet.
+      HOMEPAGE_VAR_LOCAL_DOMAIN: $LOCAL_DOMAIN
+      HOMEPAGE_VAR_RADARR_API_KEY: ${RADARR_API_KEY:-}
+      HOMEPAGE_VAR_SONARR_API_KEY: ${SONARR_API_KEY:-}
+      HOMEPAGE_VAR_PROWLARR_API_KEY: ${PROWLARR_API_KEY:-}
+      HOMEPAGE_VAR_OVERSEERR_API_KEY: ${OVERSEERR_API_KEY:-}
+      HOMEPAGE_VAR_PORTAINER_API_KEY: ${PORTAINER_API_KEY:-}
+      HOMEPAGE_VAR_QBITTORRENT_USERNAME: ${QBITTORRENT_USERNAME:-}
+      HOMEPAGE_VAR_QBITTORRENT_PASSWORD: ${QBITTORRENT_PASSWORD:-}
+      HOMEPAGE_VAR_FINNHUB_API_KEY: ${FINNHUB_API_KEY:-}
+      # HOMEPAGE_VAR_PLEX_API_KEY: ${PLEX_API_KEY:-} # X-Plex-Token, for the plex widget

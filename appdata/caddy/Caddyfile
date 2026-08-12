@@ -1,0 +1,64 @@
+# Reverse proxy for local hostnames. {$LOCAL_DOMAIN} comes from .env via
+# compose/caddy.yml. Plain HTTP on the LAN - no certificates involved.
+{
+	auto_https off
+}
+
+# Homepage dashboard on the bare domain
+http://{$LOCAL_DOMAIN} {
+	reverse_proxy homepage:3000
+}
+
+http://plex.{$LOCAL_DOMAIN} {
+	reverse_proxy plex:32400
+}
+
+http://overseerr.{$LOCAL_DOMAIN} {
+	reverse_proxy overseerr:5055
+}
+
+http://radarr.{$LOCAL_DOMAIN} {
+	reverse_proxy radarr:7878
+}
+
+http://sonarr.{$LOCAL_DOMAIN} {
+	reverse_proxy sonarr:8989
+}
+
+http://prowlarr.{$LOCAL_DOMAIN} {
+	reverse_proxy prowlarr:9696
+}
+
+http://qbittorrent.{$LOCAL_DOMAIN} {
+	reverse_proxy qbittorrent:8080
+}
+
+http://flaresolverr.{$LOCAL_DOMAIN} {
+	reverse_proxy flaresolverr:8191
+}
+
+http://dozzle.{$LOCAL_DOMAIN} {
+	reverse_proxy dozzle:8080
+}
+
+http://portainer.{$LOCAL_DOMAIN} {
+	reverse_proxy portainer:9000
+}
+
+http://files.{$LOCAL_DOMAIN} {
+	reverse_proxy filebrowser:80
+}
+
+# Disabled services - uncomment together with their includes in docker-compose.yml
+# http://sabnzbd.{$LOCAL_DOMAIN} {
+# 	reverse_proxy sabnzbd:8080
+# }
+# http://bazarr.{$LOCAL_DOMAIN} {
+# 	reverse_proxy bazarr:6767
+# }
+# http://tdarr.{$LOCAL_DOMAIN} {
+# 	reverse_proxy tdarr:8265
+# }
+# http://n8n.{$LOCAL_DOMAIN} {
+# 	reverse_proxy n8n:5678
+# }

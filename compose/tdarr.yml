@@ -1,0 +1,53 @@
+services:
+  # Tdarr Server - Media transcoding and management
+  tdarr:
+    image: ghcr.io/haveagitgat/tdarr:latest
+    container_name: tdarr
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    profiles: ["apps", "media", "all"]
+    networks:
+      - default
+    ports:
+      - "${TDARR_PORT:-8265}:8265"
+      - "${TDARR_WEBUI_PORT:-8266}:8266"
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - UMASK=002
+      - UMASK_DIR=002
+    volumes:
+      - ${DOCKERDIR}/appdata/tdarr:/config
+      - ${MEDIADIR}:/media
+      - ${DOWNLOADSDIR}:/downloads
+    devices:
+      - /dev/dri:/dev/dri  # For Intel QuickSync hardware acceleration
+
+  # Tdarr Node - Worker node for distributed processing
+  tdarr-node:
+    image: ghcr.io/haveagitgat/tdarr_node:latest
+    container_name: tdarr-node
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    profiles: ["apps", "media", "all"]
+    depends_on:
+      - tdarr
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - UMASK=002
+      - UMASK_DIR=002
+      - nodeName=tdarr-node-1
+      - serverIP=tdarr
+      - serverPort=8266
+      - nodeWebPort=8267
+    volumes:
+      - ${DOCKERDIR}/appdata/tdarr-node:/config
+      - ${MEDIADIR}:/media
+      - ${DOWNLOADSDIR}:/downloads
+    devices:
+      - /dev/dri:/dev/dri  # For Intel QuickSync hardware acceleration

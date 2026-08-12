@@ -1,0 +1,21 @@
+services:
+  # File Browser - Explorer
+  # Uses its own embedded database in /config (it has no Postgres support).
+  filebrowser:
+    image: filebrowser/filebrowser:s6
+    container_name: filebrowser
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    profiles: ["apps", "all"]
+    networks:
+      - default
+    ports:
+      - "$FILEBROWSER_PORT:80"
+    volumes:
+      - $DOCKERDIR/appdata/filebrowser:/config
+      - $USERDIR:/data/
+    environment:
+      - TZ=$TZ
+      - PUID=$PUID
+      - PGID=$PGID

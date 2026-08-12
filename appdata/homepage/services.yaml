@@ -1,0 +1,118 @@
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/configs/services/
+#
+# Widgets talk to the services container-to-container (http://<container>:<port>),
+# so no host IPs or published ports are needed. User-facing links use the
+# local DNS domain served by dnsmasq + caddy.
+# {{HOMEPAGE_VAR_*}} placeholders are resolved from environment variables
+# set on the homepage container (compose/homepage.yml).
+# `server`/`container` entries show live container status via the docker
+# socket proxy configured in docker.yaml.
+
+- Media:
+    - Plex:
+        icon: plex.png
+        href: http://plex.{{HOMEPAGE_VAR_LOCAL_DOMAIN}}/web
+        description: Media Server
+        server: my-docker
+        container: plex
+        # To enable the widget: set PLEX_API_KEY (an X-Plex-Token) in .env and
+        # uncomment HOMEPAGE_VAR_PLEX_API_KEY in compose/homepage.yml, then:
+        # widget:
+        #   type: plex
+        #   url: http://plex:32400
+        #   key: "{{HOMEPAGE_VAR_PLEX_API_KEY}}"
+    - Overseerr:
+        icon: overseerr.png
+        href: http://overseerr.{{HOMEPAGE_VAR_LOCAL_DOMAIN}}
+        description: Media Requests
+        server: my-docker
+        container: overseerr
+        widget:
+          type: overseerr
+          url: http://overseerr:5055
+          key: "{{HOMEPAGE_VAR_OVERSEERR_API_KEY}}"
+
+- Starr:
+    - Radarr:
+        icon: radarr.png
+        href: http://radarr.{{HOMEPAGE_VAR_LOCAL_DOMAIN}}
+        description: Movies Management
+        server: my-docker
+        container: radarr
+        widget:
+          type: radarr
+          url: http://radarr:7878
+          key: "{{HOMEPAGE_VAR_RADARR_API_KEY}}"
+    - Sonarr:
+        icon: sonarr.png
+        href: http://sonarr.{{HOMEPAGE_VAR_LOCAL_DOMAIN}}
+        description: TV Shows Management
+        server: my-docker
+        container: sonarr
+        widget:
+          type: sonarr
+          url: http://sonarr:8989
+          key: "{{HOMEPAGE_VAR_SONARR_API_KEY}}"
+    - Prowlarr:
+        icon: prowlarr.png
+        href: http://prowlarr.{{HOMEPAGE_VAR_LOCAL_DOMAIN}}
+        description: Index Manager
+        server: my-docker
+        container: prowlarr
+        widget:
+          type: prowlarr
+          url: http://prowlarr:9696
+          key: "{{HOMEPAGE_VAR_PROWLARR_API_KEY}}"
+
+- Downloads:
+    - qBittorrent:
+        icon: qbittorrent.png
+        href: http://qbittorrent.{{HOMEPAGE_VAR_LOCAL_DOMAIN}}
+        description: Torrent Client
+        server: my-docker
+        container: qbittorrent
+        widget:
+          type: qbittorrent
+          url: http://qbittorrent:8080
+          username: "{{HOMEPAGE_VAR_QBITTORRENT_USERNAME}}"
+          password: "{{HOMEPAGE_VAR_QBITTORRENT_PASSWORD}}"
+          enableLeechProgress: true
+    # - SABnzbd: # disabled - enable together with compose/sabnzbd.yml
+    #     icon: sabnzbd.png
+    #     href: http://sabnzbd.{{HOMEPAGE_VAR_LOCAL_DOMAIN}}
+    #     description: NZB Downloader
+    #     server: my-docker
+    #     container: sabnzbd
+
+- Tools:
+    - Portainer:
+        icon: portainer.png
+        href: http://portainer.{{HOMEPAGE_VAR_LOCAL_DOMAIN}}
+        description: Container Management
+        server: my-docker
+        container: portainer
+        widget:
+          type: portainer
+          url: http://portainer:9000
+          env: 1
+          key: "{{HOMEPAGE_VAR_PORTAINER_API_KEY}}"
+    - Dozzle:
+        icon: dozzle.png
+        href: http://dozzle.{{HOMEPAGE_VAR_LOCAL_DOMAIN}}
+        description: Real-time Docker Log Viewer
+        server: my-docker
+        container: dozzle
+    - File Browser:
+        icon: filebrowser.png
+        href: http://files.{{HOMEPAGE_VAR_LOCAL_DOMAIN}}
+        description: Web File Manager
+        server: my-docker
+        container: filebrowser
+
+- Home:
+    - Home Assistant:
+        href: http://homeassistant.local:8123
+        description: Home Assistant
+        icon: home-assistant.png

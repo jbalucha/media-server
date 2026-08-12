@@ -1,0 +1,11 @@
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/configs/settings/
+# Secrets are injected via {{HOMEPAGE_VAR_*}} from environment variables
+# set on the homepage container (compose/homepage.yml) - never put real
+# keys in this file, it is committed to git.
+
+providers:
+  finnhub: "{{HOMEPAGE_VAR_FINNHUB_API_KEY}}"
+  # openweathermap: "{{HOMEPAGE_VAR_OPENWEATHERMAP_API_KEY}}"
+  # weatherapi: "{{HOMEPAGE_VAR_WEATHERAPI_API_KEY}}"

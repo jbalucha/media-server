@@ -1,0 +1,20 @@
+services:
+  # Overseerr - Movie & TV Show Management
+  overseerr:
+    image: sctx/overseerr:latest
+    container_name: overseerr
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    profiles: ["apps", "all"]
+    networks:
+      - default
+    ports:
+      - "$OVERSEERR_PORT:5055"
+    volumes:
+      - $DOCKERDIR/appdata/overseerr:/app/config
+    environment:
+      TZ: $TZ
+      PUID: $PUID
+      PGID: $PGID
+

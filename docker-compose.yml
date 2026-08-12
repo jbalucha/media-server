@@ -1,0 +1,44 @@
+########################### NETWORKS
+networks:
+  default:
+    driver: bridge
+  socket_proxy:
+    name: socket_proxy
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.90.0/24
+
+########################### SECRETS
+secrets:
+  plex_claim:
+    file: ./secrets/plex_claim
+
+include:
+  ########################### CORE
+  - compose/socket-proxy.yml
+  - compose/dnsmasq.yml # Local DNS: *.$LOCAL_DOMAIN -> this host
+  - compose/caddy.yml # Reverse proxy: http://<service>.$LOCAL_DOMAIN
+  - compose/portainer.yml
+  - compose/dozzle.yml
+  - compose/homepage.yml
+  ########################### MEDIA
+  - compose/plex.yml
+  - compose/qbittorrent.yml
+  - compose/radarr.yml
+  - compose/sonarr.yml
+  - compose/prowlarr.yml
+  - compose/flaresolverr.yml
+  - compose/overseerr.yml
+  ########################### TOOLS
+  - compose/filebrowser.yml
+  # - compose/sabnzbd.yml
+  # - compose/docker-gc.yml
+  ########################### DISABLED (not needed right now)
+  # - compose/bazarr.yml
+  # - compose/tdarr.yml
+  # - compose/n8n.yml
+  # postgres + redis existed only to back n8n (filebrowser uses its own
+  # embedded database) - re-enable them together with n8n if ever needed.
+  # - compose/postgres.yml
+  # - compose/redis.yml

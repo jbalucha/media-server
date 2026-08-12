@@ -1,0 +1,25 @@
+# Environment - holds all credentials and API keys, never commit
+.env
+*.env
+!.env.example
+
+# Secrets (Docker secrets files)
+secrets/*
+!secrets/.gitkeep
+
+# Runtime application data (databases, tokens, caches) - only keep
+# hand-written config templates under version control
+appdata/*
+!appdata/.gitkeep
+!appdata/homepage/
+appdata/homepage/*
+!appdata/homepage/*.yaml
+!appdata/dnsmasq/
+appdata/dnsmasq/*
+!appdata/dnsmasq/dnsmasq.conf
+!appdata/caddy/
+appdata/caddy/*
+!appdata/caddy/Caddyfile
+
+# OS noise
+.DS_Store

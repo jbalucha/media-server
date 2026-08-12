@@ -1,0 +1,16 @@
+# DISABLED by default (see docker-compose.yml) - only n8n uses Redis.
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: n8n-redis
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    profiles: ["apps", "all"]
+    networks:
+      - default
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5

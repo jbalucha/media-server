@@ -1,0 +1,21 @@
+services:
+  # Caddy - Reverse proxy for friendly local hostnames
+  # Serves http://<service>.$LOCAL_DOMAIN (see appdata/caddy/Caddyfile).
+  # Works together with dnsmasq, which resolves those names to this host.
+  caddy:
+    image: caddy:2-alpine
+    container_name: caddy
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    profiles: ["core", "all"]
+    networks:
+      - default
+    ports:
+      - "80:80"
+    environment:
+      LOCAL_DOMAIN: $LOCAL_DOMAIN
+    volumes:
+      - $DOCKERDIR/appdata/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - $DOCKERDIR/appdata/caddy/data:/data
+      - $DOCKERDIR/appdata/caddy/config:/config

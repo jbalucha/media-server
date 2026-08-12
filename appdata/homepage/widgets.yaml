@@ -1,0 +1,33 @@
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/configs/info-widgets/
+
+- resources:
+    cpu: true
+    memory: true
+    disk: /
+    network: true # optional, uses 'default' if true or specify a network interface name
+    cputemp: true # disabled by default
+    tempmin: 0 # optional, minimum cpu temp
+    tempmax: 100 # optional, maximum cpu temp
+    uptime: true # disabled by default
+    # expanded: true # show the expanded view
+    # label: MiniPC # optional
+
+# - search:
+#     provider: duckduckgo
+#     target: _blank
+
+# - stocks:
+#     provider: finnhub
+#     color: true # optional, defaults to true
+#     cache: 1 # optional, default caches results for 1 minute
+#     watchlist:
+#       - GME
+#       - AMC
+#       - NVDA
+#       - AMD
+#       - TSM
+#       - MSFT
+#       - AAPL
+#       - BRK.A

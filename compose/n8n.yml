@@ -1,0 +1,58 @@
+# DISABLED by default (see docker-compose.yml). Requires postgres + redis.
+# n8n >= 1.0 manages authentication itself (owner account created on first
+# run) - the old N8N_BASIC_AUTH_* variables were removed upstream and must
+# not be used.
+x-shared: &shared
+  user: ${PUID}:${PGID}
+  restart: unless-stopped
+  profiles: ["apps", "all"]
+  image: n8nio/n8n:latest
+  networks:
+    - default
+  volumes:
+    - ${DOCKERDIR}/appdata/n8n:/home/node/.n8n
+
+x-environment: &environment
+  TZ: ${TZ}
+  GENERIC_TIMEZONE: ${TZ}
+  # Database config
+  DB_TYPE: postgresdb
+  DB_POSTGRESDB_HOST: postgres
+  DB_POSTGRESDB_PORT: 5432
+  DB_POSTGRESDB_DATABASE: n8n
+  DB_POSTGRESDB_USER: n8n
+  DB_POSTGRESDB_PASSWORD: ${POSTGRES_N8N_PASSWORD:-}
+  # Redis config
+  QUEUE_BULL_REDIS_HOST: redis
+  QUEUE_BULL_REDIS_PORT: 6379
+  NODE_ENV: production
+  EXECUTIONS_MODE: queue
+  N8N_DIAGNOSTICS_ENABLED: "false"
+  N8N_SECURE_COOKIE: "false" # plain-HTTP LAN access
+
+services:
+  n8n:
+    <<: *shared
+    container_name: n8n
+    ports:
+      - "${N8N_PORT:-5678}:5678"
+    environment:
+      <<: *environment
+      N8N_HOST: ${N8N_HOST:-localhost}
+      N8N_PORT: 5678
+      N8N_PROTOCOL: http
+      WEBHOOK_URL: http://${N8N_HOST:-localhost}:${N8N_PORT:-5678}/
+    depends_on:
+      - postgres
+      - redis
+
+  n8n-worker:
+    <<: *shared
+    container_name: n8n-worker
+    command: worker
+    environment:
+      <<: *environment
+    depends_on:
+      - n8n
+      - postgres
+      - redis

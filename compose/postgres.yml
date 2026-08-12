@@ -1,0 +1,28 @@
+# DISABLED by default (see docker-compose.yml) - only n8n uses Postgres.
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    profiles: ["apps", "all"]
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-} # superuser - required, set in .env
+      - POSTGRES_DB=${POSTGRES_DB:-postgres}
+      # Comma-separated list of extra databases created by scripts/init-db.sh.
+      # Per-database credentials come from POSTGRES_USER_<DB> / POSTGRES_PASSWORD_<DB>.
+      - POSTGRES_MULTIPLE_DATABASES=${POSTGRES_MULTIPLE_DATABASES:-n8n}
+      - POSTGRES_USER_N8N=n8n
+      - POSTGRES_PASSWORD_N8N=${POSTGRES_N8N_PASSWORD:-}
+    volumes:
+      - ${DOCKERDIR}/appdata/postgres:/var/lib/postgresql/data
+      - ${DOCKERDIR}/scripts/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh:ro
+    networks:
+      - default
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5

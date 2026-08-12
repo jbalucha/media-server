@@ -1,0 +1,19 @@
+services:
+  # Dnsmasq - Local DNS server
+  # Resolves $LOCAL_DOMAIN and all its subdomains to this host, forwards
+  # everything else upstream. Point your router's DHCP DNS (or individual
+  # devices) at this host's IP to use it LAN-wide.
+  dnsmasq:
+    image: dockurr/dnsmasq:latest
+    container_name: dnsmasq
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    profiles: ["core", "all"]
+    networks:
+      - default
+    ports:
+      - "53:53/udp"
+      - "53:53/tcp"
+    volumes:
+      - $DOCKERDIR/appdata/dnsmasq/dnsmasq.conf:/etc/dnsmasq.conf:ro
