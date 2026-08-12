@@ -8,7 +8,7 @@ with local DNS so every service is reachable by name instead of IP:port.
 - **Media**: Plex (streaming), Overseerr (requests)
 - **Starr**: Sonarr, Radarr, Prowlarr
 - **Downloads**: qBittorrent, FlareSolverr
-- **Local DNS + proxy**: dnsmasq + Traefik — `http://plex.minipc.com` instead of `192.168.1.245:32400`
+- **Local DNS + proxy**: dnsmasq + Traefik — `http://plex.minipc.arpa` instead of `192.168.1.245:32400`
 - **Dashboard**: Homepage
 - **Ops**: Portainer, Dozzle, File Browser, Docker Socket Proxy
 - Disabled but ready to re-enable: SABnzbd, Bazarr, Tdarr, n8n (+ Postgres/Redis), Docker GC
@@ -41,7 +41,7 @@ with local DNS so every service is reachable by name instead of IP:port.
 
 4. Point your network at the local DNS. In your router's DHCP settings set
    the DNS server to `192.168.1.245` (or set it per-device). After that,
-   `minipc.com` and every `*.minipc.com` resolve to the minipc.
+   `minipc.arpa` and every `*.minipc.arpa` resolve to the minipc.
 
    > Port 53 must be free on the host. On Ubuntu with systemd-resolved this
    > usually coexists fine (it binds only 127.0.0.53), but if `docker compose up`
@@ -56,25 +56,27 @@ with local DNS so every service is reachable by name instead of IP:port.
 
 | Service | URL | Fallback |
 | --- | --- | --- |
-| Homepage | http://minipc.com | http://192.168.1.245:3000 |
-| Plex | http://plex.minipc.com/web | :32400 |
-| Overseerr | http://overseerr.minipc.com | :5055 |
-| Radarr | http://radarr.minipc.com | :7878 |
-| Sonarr | http://sonarr.minipc.com | :8989 |
-| Prowlarr | http://prowlarr.minipc.com | :9696 |
-| qBittorrent | http://qbittorrent.minipc.com | :8080 |
-| Portainer | http://portainer.minipc.com | :9000 |
-| Dozzle | http://dozzle.minipc.com | :8082 |
-| File Browser | http://files.minipc.com | :8083 |
-| Traefik dashboard | http://traefik.minipc.com | — |
+| Homepage | http://minipc.arpa | http://192.168.1.245:3000 |
+| Plex | http://plex.minipc.arpa/web | :32400 |
+| Overseerr | http://overseerr.minipc.arpa | :5055 |
+| Radarr | http://radarr.minipc.arpa | :7878 |
+| Sonarr | http://sonarr.minipc.arpa | :8989 |
+| Prowlarr | http://prowlarr.minipc.arpa | :9696 |
+| qBittorrent | http://qbittorrent.minipc.arpa | :8080 |
+| Portainer | http://portainer.minipc.arpa | :9000 |
+| Dozzle | http://dozzle.minipc.arpa | :8082 |
+| File Browser | http://files.minipc.arpa | :8083 |
+| Traefik dashboard | http://traefik.minipc.arpa | — |
 
 Plex apps (TV, mobile) discover the server directly via port 32400 as usual;
 the proxy hostname is for the web UI.
 
-> **Note**: `minipc.com` is a registered public domain. While the local DNS
-> is active, devices on the LAN cannot reach the real minipc.com website.
-> If that matters, switch `LOCAL_DOMAIN` (and `appdata/dnsmasq/dnsmasq.conf`)
-> to a domain you own or `home.arpa`.
+> **Note**: `.arpa` names never resolve on the public internet, so devices
+> that don't use this DNS server simply fail to resolve these names — they
+> can't accidentally land on a stranger's website (which is what happens
+> with a hijacked real domain like `minipc.com`). The officially reserved
+> home-network domain is `home.arpa` (RFC 8375); `minipc.arpa` is
+> non-standard but behaves the same on a LAN.
 
 ## 🔒 Security notes
 
@@ -89,7 +91,7 @@ the proxy hostname is for the web UI.
 - The Docker socket proxy is reachable **only** from the internal
   `socket_proxy` network. Never publish port 2375 to the host. Traefik
   discovers routes through it (`traefik.*` labels on each service).
-- The Traefik dashboard (http://traefik.minipc.com) is read-only but
+- The Traefik dashboard (http://traefik.minipc.arpa) is read-only but
   unauthenticated — LAN only.
 - Dozzle has no authentication — anyone on the LAN can read container logs.
   Keep that in mind for what gets logged, or add authentication
