@@ -8,7 +8,7 @@ with local DNS so every service is reachable by name instead of IP:port.
 - **Media**: Plex (streaming), Overseerr (requests)
 - **Starr**: Sonarr, Radarr, Prowlarr
 - **Downloads**: qBittorrent, FlareSolverr
-- **Local DNS + proxy**: dnsmasq + Traefik — `http://plex.minipc-ms.duckdns.org` instead of `192.168.1.245:32400`
+- **Local DNS + proxy**: dnsmasq + Traefik — `http://plex.janba-minipc.duckdns.org` instead of `192.168.1.245:32400`
 - **Dashboard**: Homepage
 - **Ops**: Portainer, Dozzle, File Browser, Docker Socket Proxy
 - Disabled but ready to re-enable: SABnzbd, Bazarr, Tdarr, n8n (+ Postgres/Redis), Docker GC
@@ -39,14 +39,14 @@ with local DNS so every service is reachable by name instead of IP:port.
    docker compose up -d
    ```
 
-4. DNS: `minipc-ms.duckdns.org` is a public DuckDNS record pointing at the
+4. DNS: `janba-minipc.duckdns.org` is a public DuckDNS record pointing at the
    **private** LAN IP `192.168.1.245`, and DuckDNS resolves all subdomains
-   (`plex.minipc-ms.duckdns.org`, ...) to the same IP. Every device on the
+   (`plex.janba-minipc.duckdns.org`, ...) to the same IP. Every device on the
    LAN therefore resolves these names through whatever DNS it already uses —
    no router or per-device configuration needed. Requirements: the record's
    IP is maintained at duckdns.org, and the local resolver chain must not
    filter private-IP answers (rebind protection — verify once with
-   `dig plex.minipc-ms.duckdns.org`).
+   `dig plex.janba-minipc.duckdns.org`).
 
    The bundled dnsmasq is an optional extra: point a device's DNS at
    `192.168.1.245` and the names keep resolving even without internet
@@ -63,17 +63,17 @@ with local DNS so every service is reachable by name instead of IP:port.
 
 | Service | URL | Fallback |
 | --- | --- | --- |
-| Homepage | http://minipc-ms.duckdns.org | http://192.168.1.245:3000 |
-| Plex | http://plex.minipc-ms.duckdns.org/web | :32400 |
-| Overseerr | http://overseerr.minipc-ms.duckdns.org | :5055 |
-| Radarr | http://radarr.minipc-ms.duckdns.org | :7878 |
-| Sonarr | http://sonarr.minipc-ms.duckdns.org | :8989 |
-| Prowlarr | http://prowlarr.minipc-ms.duckdns.org | :9696 |
-| qBittorrent | http://qbittorrent.minipc-ms.duckdns.org | :8080 |
-| Portainer | http://portainer.minipc-ms.duckdns.org | :9000 |
-| Dozzle | http://dozzle.minipc-ms.duckdns.org | :8082 |
-| File Browser | http://files.minipc-ms.duckdns.org | :8083 |
-| Traefik dashboard | http://traefik.minipc-ms.duckdns.org | — |
+| Homepage | http://janba-minipc.duckdns.org | http://192.168.1.245:3000 |
+| Plex | http://plex.janba-minipc.duckdns.org/web | :32400 |
+| Overseerr | http://overseerr.janba-minipc.duckdns.org | :5055 |
+| Radarr | http://radarr.janba-minipc.duckdns.org | :7878 |
+| Sonarr | http://sonarr.janba-minipc.duckdns.org | :8989 |
+| Prowlarr | http://prowlarr.janba-minipc.duckdns.org | :9696 |
+| qBittorrent | http://qbittorrent.janba-minipc.duckdns.org | :8080 |
+| Portainer | http://portainer.janba-minipc.duckdns.org | :9000 |
+| Dozzle | http://dozzle.janba-minipc.duckdns.org | :8082 |
+| File Browser | http://files.janba-minipc.duckdns.org | :8083 |
+| Traefik dashboard | http://traefik.janba-minipc.duckdns.org | — |
 
 Plex apps (TV, mobile) discover the server directly via port 32400 as usual;
 the proxy hostname is for the web UI.
@@ -97,7 +97,7 @@ the proxy hostname is for the web UI.
 - The Docker socket proxy is reachable **only** from the internal
   `socket_proxy` network. Never publish port 2375 to the host. Traefik
   discovers routes through it (`traefik.*` labels on each service).
-- The Traefik dashboard (http://traefik.minipc-ms.duckdns.org) is read-only but
+- The Traefik dashboard (http://traefik.janba-minipc.duckdns.org) is read-only but
   unauthenticated — LAN only.
 - Dozzle has no authentication — anyone on the LAN can read container logs.
   Keep that in mind for what gets logged, or add authentication
