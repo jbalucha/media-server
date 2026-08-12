@@ -10,6 +10,7 @@ with local DNS so every service is reachable by name instead of IP:port.
 - **Downloads**: qBittorrent, FlareSolverr
 - **Local DNS + proxy**: dnsmasq + Traefik — `http://plex.janba-minipc.duckdns.org` instead of `192.168.1.245:32400`
 - **Dashboard**: Homepage
+- **Monitoring**: Grafana + Loki/Alloy (logs) + Prometheus/cAdvisor/node-exporter (metrics), 7-day retention
 - **Ops**: Portainer, Dozzle, File Browser, Docker Socket Proxy
 - Disabled but ready to re-enable: SABnzbd, Bazarr, Tdarr, n8n (+ Postgres/Redis), Docker GC
 
@@ -74,6 +75,8 @@ with local DNS so every service is reachable by name instead of IP:port.
 | Dozzle | http://dozzle.janba-minipc.duckdns.org | :8082 |
 | File Browser | http://files.janba-minipc.duckdns.org | :8083 |
 | Traefik dashboard | http://traefik.janba-minipc.duckdns.org | — |
+| Grafana | http://grafana.janba-minipc.duckdns.org | :3001 |
+| Prometheus | http://prometheus.janba-minipc.duckdns.org | — |
 
 Plex apps (TV, mobile) discover the server directly via port 32400 as usual;
 the proxy hostname is for the web UI.

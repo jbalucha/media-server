@@ -34,6 +34,8 @@ include:
   - compose/prowlarr.yml
   - compose/flaresolverr.yml
   - compose/seerr.yml
+  ########################### MONITORING
+  - compose/monitoring.yml # Grafana + Loki + Alloy + Prometheus (7d retention)
   ########################### TOOLS
   - compose/filebrowser.yml
   # - compose/sabnzbd.yml

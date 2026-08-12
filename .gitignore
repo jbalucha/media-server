@@ -17,6 +17,18 @@ appdata/homepage/*
 !appdata/dnsmasq/
 appdata/dnsmasq/*
 !appdata/dnsmasq/dnsmasq.conf
+!appdata/loki/
+appdata/loki/*
+!appdata/loki/loki-config.yaml
+!appdata/alloy/
+appdata/alloy/*
+!appdata/alloy/config.alloy
+!appdata/prometheus/
+appdata/prometheus/*
+!appdata/prometheus/prometheus.yml
+!appdata/grafana/
+appdata/grafana/*
+!appdata/grafana/provisioning/
 
 # OS noise
 .DS_Store

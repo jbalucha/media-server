@@ -131,6 +131,29 @@
           deviceid: nJPbH33KG811CNTRL
           key: "{{HOMEPAGE_VAR_TAILSCALE_API_KEY}}"
 
+- Monitoring:
+    - Grafana:
+        icon: grafana.png
+        href: http://grafana.{{HOMEPAGE_VAR_LOCAL_DOMAIN}}
+        description: Logs & Metrics (7d retention)
+        server: my-docker
+        container: grafana
+        # Optional widget - needs your Grafana credentials:
+        # widget:
+        #   type: grafana
+        #   url: http://grafana:3000
+        #   username: admin
+        #   password: "{{HOMEPAGE_VAR_GRAFANA_PASSWORD}}"
+    - Prometheus:
+        icon: prometheus.png
+        href: http://prometheus.{{HOMEPAGE_VAR_LOCAL_DOMAIN}}
+        description: Metrics Store
+        server: my-docker
+        container: prometheus
+        widget:
+          type: prometheus
+          url: http://prometheus:9090
+
 - Home:
     - Home Assistant:
         href: http://homeassistant.local:8123

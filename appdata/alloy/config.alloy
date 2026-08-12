@@ -1,0 +1,38 @@
+// Grafana Alloy - collects logs from every container via the docker
+// socket proxy (never the raw socket) and ships them to Loki.
+
+discovery.docker "media" {
+  host             = "tcp://socket-proxy:2375"
+  refresh_interval = "15s"
+}
+
+discovery.relabel "media" {
+  targets = discovery.docker.media.targets
+
+  // container name without the leading slash
+  rule {
+    source_labels = ["__meta_docker_container_name"]
+    regex         = "/(.*)"
+    target_label  = "container"
+  }
+
+  // compose service name, when present
+  rule {
+    source_labels = ["__meta_docker_container_label_com_docker_compose_service"]
+    target_label  = "service"
+  }
+}
+
+loki.source.docker "media" {
+  host          = "tcp://socket-proxy:2375"
+  targets       = discovery.docker.media.targets
+  relabel_rules = discovery.relabel.media.rules
+  labels        = { job = "docker" }
+  forward_to    = [loki.write.local.receiver]
+}
+
+loki.write "local" {
+  endpoint {
+    url = "http://loki:3100/loki/api/v1/push"
+  }
+}

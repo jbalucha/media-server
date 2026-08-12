@@ -1,0 +1,124 @@
+services:
+  # ---------------- Grafana - dashboards for logs + metrics ----------------
+  # First login: admin/admin (you are forced to set a new password).
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    user: "${PUID}:${PGID}"
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    profiles: ["apps", "all"]
+    networks:
+      - default
+    ports:
+      - "$GRAFANA_PORT:3000"
+    environment:
+      TZ: $TZ
+      GF_SERVER_ROOT_URL: http://grafana.${LOCAL_DOMAIN}
+      GF_ANALYTICS_REPORTING_ENABLED: "false"
+    volumes:
+      - $DOCKERDIR/appdata/grafana/data:/var/lib/grafana
+      - $DOCKERDIR/appdata/grafana/provisioning:/etc/grafana/provisioning:ro
+    depends_on:
+      - loki
+      - prometheus
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.grafana.rule=Host(`grafana.${LOCAL_DOMAIN}`)
+      - traefik.http.routers.grafana.entrypoints=web
+      - traefik.http.services.grafana.loadbalancer.server.port=3000
+
+  # ---------------- Loki - log storage (7 day retention) ----------------
+  # Not published to the host - only Grafana/Alloy talk to it internally.
+  loki:
+    image: grafana/loki:3
+    container_name: loki
+    user: "${PUID}:${PGID}"
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    profiles: ["apps", "all"]
+    networks:
+      - default
+    command: -config.file=/etc/loki/loki-config.yaml
+    volumes:
+      - $DOCKERDIR/appdata/loki/loki-config.yaml:/etc/loki/loki-config.yaml:ro
+      - $DOCKERDIR/appdata/loki/data:/loki
+
+  # ---------------- Alloy - log collector (docker -> Loki) ----------------
+  # Reads container logs through the socket proxy, like Dozzle does.
+  alloy:
+    image: grafana/alloy:latest
+    container_name: alloy
+    user: "${PUID}:${PGID}"
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    profiles: ["apps", "all"]
+    networks:
+      - default
+      - socket_proxy
+    command: run --server.http.listen-addr=0.0.0.0:12345 --storage.path=/var/lib/alloy/data /etc/alloy/config.alloy
+    volumes:
+      - $DOCKERDIR/appdata/alloy/config.alloy:/etc/alloy/config.alloy:ro
+      - $DOCKERDIR/appdata/alloy/data:/var/lib/alloy/data
+    depends_on:
+      - loki
+
+  # ---------------- Prometheus - metrics (7 day retention) ----------------
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    user: "${PUID}:${PGID}"
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    profiles: ["apps", "all"]
+    networks:
+      - default
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.retention.time=7d
+    volumes:
+      - $DOCKERDIR/appdata/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - $DOCKERDIR/appdata/prometheus/data:/prometheus
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.prometheus.rule=Host(`prometheus.${LOCAL_DOMAIN}`)
+      - traefik.http.routers.prometheus.entrypoints=web
+      - traefik.http.services.prometheus.loadbalancer.server.port=9090
+
+  # ---------------- cAdvisor - per-container metrics ----------------
+  # Needs broad read-only host access (cgroups + docker metadata); this is
+  # inherent to what it measures and cannot go through the socket proxy.
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cadvisor
+    restart: unless-stopped
+    profiles: ["apps", "all"]
+    networks:
+      - default
+    devices:
+      - /dev/kmsg
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+
+  # ---------------- node-exporter - host metrics ----------------
+  node-exporter:
+    image: quay.io/prometheus/node-exporter:latest
+    container_name: node-exporter
+    restart: unless-stopped
+    profiles: ["apps", "all"]
+    networks:
+      - default
+    pid: host
+    command:
+      - --path.rootfs=/host
+    volumes:
+      - /:/host:ro,rslave

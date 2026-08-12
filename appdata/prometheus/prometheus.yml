@@ -1,0 +1,25 @@
+# Prometheus - metrics for the media server stack. Retention is set to 7d
+# via the --storage.tsdb.retention.time flag in compose/monitoring.yml.
+global:
+  scrape_interval: 30s
+  evaluation_interval: 30s
+
+scrape_configs:
+  - job_name: prometheus
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  # Per-container CPU/memory/network/disk
+  - job_name: cadvisor
+    static_configs:
+      - targets: ["cadvisor:8080"]
+
+  # Host CPU/memory/disk/network
+  - job_name: node
+    static_configs:
+      - targets: ["node-exporter:9100"]
+
+  # Traefik request/entrypoint metrics (internal :8080 API port)
+  - job_name: traefik
+    static_configs:
+      - targets: ["traefik:8080"]
