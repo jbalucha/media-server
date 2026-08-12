@@ -109,19 +109,27 @@
         description: Web File Manager
         server: my-docker
         container: filebrowser
+    - Traefik:
+        icon: traefik.png
+        href: http://traefik.{{HOMEPAGE_VAR_LOCAL_DOMAIN}}
+        description: Reverse Proxy
+        server: my-docker
+        container: traefik
+        widget:
+          type: traefik
+          url: http://traefik:8080
     - Tailscale:
         icon: tailscale.png
         href: https://login.tailscale.com/admin/machines
         description: Remote Access VPN
         server: my-docker
         container: tailscale
-        # Optional live widget - needs a Tailscale API access token and the
-        # device id from the admin console (see
-        # https://gethomepage.dev/widgets/services/tailscale/):
-        # widget:
-        #   type: tailscale
-        #   deviceid: <device-id>
-        #   key: "{{HOMEPAGE_VAR_TAILSCALE_API_KEY}}"
+        # key = Tailscale API access token (expires <=90 days - regenerate at
+        # https://login.tailscale.com/admin/settings/keys when the widget dies)
+        widget:
+          type: tailscale
+          deviceid: nJPbH33KG811CNTRL
+          key: "{{HOMEPAGE_VAR_TAILSCALE_API_KEY}}"
 
 - Home:
     - Home Assistant:

@@ -34,6 +34,7 @@ services:
       HOMEPAGE_VAR_QBITTORRENT_PASSWORD: ${QBITTORRENT_PASSWORD:-}
       HOMEPAGE_VAR_FINNHUB_API_KEY: ${FINNHUB_API_KEY:-}
       HOMEPAGE_VAR_PLEX_API_KEY: ${PLEX_API_KEY:-} # X-Plex-Token
+      HOMEPAGE_VAR_TAILSCALE_API_KEY: ${TAILSCALE_API_KEY:-}
     labels:
       - traefik.enable=true
       # Dashboard on the bare domain

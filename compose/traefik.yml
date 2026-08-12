@@ -22,6 +22,9 @@ services:
       - --providers.docker.network=media-server_default
       - --entrypoints.web.address=:80
       - --api.dashboard=true
+      # Serves the read-only API on :8080 INSIDE the docker network only
+      # (port not published) - used by the homepage traefik widget.
+      - --api.insecure=true
       - --log.level=INFO
     labels:
       - traefik.enable=true
