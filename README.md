@@ -8,7 +8,7 @@ with local DNS so every service is reachable by name instead of IP:port.
 - **Media**: Plex (streaming), Overseerr (requests)
 - **Starr**: Sonarr, Radarr, Prowlarr
 - **Downloads**: qBittorrent, FlareSolverr
-- **Local DNS + proxy**: dnsmasq + Traefik — `http://plex.minipc.arpa` instead of `192.168.1.245:32400`
+- **Local DNS + proxy**: dnsmasq + Traefik — `http://plex.minipc-ms.duckdns.org` instead of `192.168.1.245:32400`
 - **Dashboard**: Homepage
 - **Ops**: Portainer, Dozzle, File Browser, Docker Socket Proxy
 - Disabled but ready to re-enable: SABnzbd, Bazarr, Tdarr, n8n (+ Postgres/Redis), Docker GC
@@ -39,14 +39,21 @@ with local DNS so every service is reachable by name instead of IP:port.
    docker compose up -d
    ```
 
-4. Point your network at the local DNS. In your router's DHCP settings set
-   the DNS server to `192.168.1.245` (or set it per-device). After that,
-   `minipc.arpa` and every `*.minipc.arpa` resolve to the minipc.
+4. DNS: `minipc-ms.duckdns.org` is a public DuckDNS record pointing at the
+   **private** LAN IP `192.168.1.245`, and DuckDNS resolves all subdomains
+   (`plex.minipc-ms.duckdns.org`, ...) to the same IP. Every device on the
+   LAN therefore resolves these names through whatever DNS it already uses —
+   no router or per-device configuration needed. Requirements: the record's
+   IP is maintained at duckdns.org, and the local resolver chain must not
+   filter private-IP answers (rebind protection — verify once with
+   `dig plex.minipc-ms.duckdns.org`).
 
-   > Port 53 must be free on the host. On Ubuntu with systemd-resolved this
-   > usually coexists fine (it binds only 127.0.0.53), but if `docker compose up`
-   > reports port 53 in use, disable the stub listener:
-   > `DNSStubListener=no` in `/etc/systemd/resolved.conf`.
+   The bundled dnsmasq is an optional extra: point a device's DNS at
+   `192.168.1.245` and the names keep resolving even without internet
+   (it also serves `*.minipc.arpa` as an offline-only alias).
+
+   > dnsmasq binds port 53 on the LAN IP only, so it coexists with
+   > systemd-resolved's stub listener on 127.0.0.53.
 
 5. First-run setup of each app (create admin users, grab API keys), then put
    the API keys into `.env` and `docker compose up -d` again so the Homepage
@@ -56,27 +63,26 @@ with local DNS so every service is reachable by name instead of IP:port.
 
 | Service | URL | Fallback |
 | --- | --- | --- |
-| Homepage | http://minipc.arpa | http://192.168.1.245:3000 |
-| Plex | http://plex.minipc.arpa/web | :32400 |
-| Overseerr | http://overseerr.minipc.arpa | :5055 |
-| Radarr | http://radarr.minipc.arpa | :7878 |
-| Sonarr | http://sonarr.minipc.arpa | :8989 |
-| Prowlarr | http://prowlarr.minipc.arpa | :9696 |
-| qBittorrent | http://qbittorrent.minipc.arpa | :8080 |
-| Portainer | http://portainer.minipc.arpa | :9000 |
-| Dozzle | http://dozzle.minipc.arpa | :8082 |
-| File Browser | http://files.minipc.arpa | :8083 |
-| Traefik dashboard | http://traefik.minipc.arpa | — |
+| Homepage | http://minipc-ms.duckdns.org | http://192.168.1.245:3000 |
+| Plex | http://plex.minipc-ms.duckdns.org/web | :32400 |
+| Overseerr | http://overseerr.minipc-ms.duckdns.org | :5055 |
+| Radarr | http://radarr.minipc-ms.duckdns.org | :7878 |
+| Sonarr | http://sonarr.minipc-ms.duckdns.org | :8989 |
+| Prowlarr | http://prowlarr.minipc-ms.duckdns.org | :9696 |
+| qBittorrent | http://qbittorrent.minipc-ms.duckdns.org | :8080 |
+| Portainer | http://portainer.minipc-ms.duckdns.org | :9000 |
+| Dozzle | http://dozzle.minipc-ms.duckdns.org | :8082 |
+| File Browser | http://files.minipc-ms.duckdns.org | :8083 |
+| Traefik dashboard | http://traefik.minipc-ms.duckdns.org | — |
 
 Plex apps (TV, mobile) discover the server directly via port 32400 as usual;
 the proxy hostname is for the web UI.
 
-> **Note**: `.arpa` names never resolve on the public internet, so devices
-> that don't use this DNS server simply fail to resolve these names — they
-> can't accidentally land on a stranger's website (which is what happens
-> with a hijacked real domain like `minipc.com`). The officially reserved
-> home-network domain is `home.arpa` (RFC 8375); `minipc.arpa` is
-> non-standard but behaves the same on a LAN.
+> **Note**: the DuckDNS record intentionally holds a private IP — it makes
+> the names resolve *inside* the LAN only. Nothing is exposed to the
+> internet: no ports are forwarded, and outsiders resolving the name just
+> get an unroutable 192.168.x address. Anyone can see the hostname exists
+> in public DNS, which is harmless for a homelab.
 
 ## 🔒 Security notes
 
@@ -91,7 +97,7 @@ the proxy hostname is for the web UI.
 - The Docker socket proxy is reachable **only** from the internal
   `socket_proxy` network. Never publish port 2375 to the host. Traefik
   discovers routes through it (`traefik.*` labels on each service).
-- The Traefik dashboard (http://traefik.minipc.arpa) is read-only but
+- The Traefik dashboard (http://traefik.minipc-ms.duckdns.org) is read-only but
   unauthenticated — LAN only.
 - Dozzle has no authentication — anyone on the LAN can read container logs.
   Keep that in mind for what gets logged, or add authentication
