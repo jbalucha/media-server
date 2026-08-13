@@ -30,6 +30,7 @@ include:
   - compose/plex.yml
   # - compose/jellyfin.yml # disabled: Plex handles Live TV now (appdata kept for re-enable)
   - compose/dispatcharr.yml # IPTV manager -> emulated tuner (consumed by Plex Live TV)
+  - compose/gluetun.yml # PIA VPN tunnel + kill switch (qbittorrent runs inside it)
   - compose/qbittorrent.yml
   - compose/radarr.yml
   - compose/sonarr.yml

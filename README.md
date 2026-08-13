@@ -7,7 +7,7 @@ with local DNS so every service is reachable by name instead of IP:port.
 
 - **Media**: Plex (streaming + IPTV live TV via Dispatcharr), Seerr (requests)
 - **Starr**: Sonarr, Radarr, Prowlarr
-- **Downloads**: qBittorrent, FlareSolverr
+- **Downloads**: qBittorrent (tunneled through PIA VPN via gluetun, with kill switch), FlareSolverr
 - **Local DNS + proxy**: dnsmasq + Traefik — `http://plex.janba-minipc.duckdns.org` instead of `192.168.1.245:32400`
 - **Dashboard**: Homepage
 - **Monitoring**: Grafana + Loki/Alloy (logs) + Prometheus/cAdvisor/node-exporter (metrics), 7-day retention

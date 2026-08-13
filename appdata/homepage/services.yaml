@@ -101,7 +101,8 @@
         container: qbittorrent
         widget:
           type: qbittorrent
-          url: http://qbittorrent:8080
+          # qbittorrent lives inside gluetun's network namespace (PIA VPN)
+          url: http://gluetun:8080
           username: "{{HOMEPAGE_VAR_QBITTORRENT_USERNAME}}"
           password: "{{HOMEPAGE_VAR_QBITTORRENT_PASSWORD}}"
           enableLeechProgress: true

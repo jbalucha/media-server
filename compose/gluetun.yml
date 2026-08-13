@@ -1,0 +1,35 @@
+services:
+  # Gluetun - PIA VPN tunnel + kill switch for qBittorrent.
+  # qBittorrent runs inside this container's network namespace, so ALL its
+  # traffic goes through the VPN (firewall blocks everything if the tunnel
+  # drops). Publishes qBittorrent's WebUI port and carries its Traefik route.
+  gluetun:
+    image: qmcgaw/gluetun:latest
+    container_name: gluetun
+    restart: unless-stopped
+    profiles: ["apps", "downloads", "all"]
+    networks:
+      - default
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    ports:
+      - "$QBITTORRENT_PORT:8080" # qBittorrent WebUI (runs in this netns)
+    environment:
+      - VPN_SERVICE_PROVIDER=private internet access
+      - OPENVPN_USER=${PIA_USERNAME:-}
+      - OPENVPN_PASSWORD=${PIA_PASSWORD:-}
+      - SERVER_REGIONS=${PIA_REGION:-Netherlands}
+      # PIA port forwarding (better seeding); forwarded port appears in
+      # /tmp/gluetun/forwarded_port inside the container
+      - VPN_PORT_FORWARDING=on
+      - TZ=$TZ
+    volumes:
+      - $DOCKERDIR/appdata/gluetun:/gluetun
+    labels:
+      - traefik.enable=true
+      # qBittorrent's route lives here because its WebUI answers in this netns
+      - traefik.http.routers.qbittorrent.rule=Host(`qbittorrent.${LOCAL_DOMAIN}`)
+      - traefik.http.routers.qbittorrent.entrypoints=web
+      - traefik.http.services.qbittorrent.loadbalancer.server.port=8080

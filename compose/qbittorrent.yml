@@ -1,5 +1,7 @@
 services:
-  # qBittorrent - Torrent downloader
+  # qBittorrent - Torrent downloader (ALL traffic through the PIA VPN)
+  # Shares gluetun's network namespace: no own networks/ports/labels here.
+  # Other containers reach the WebUI at http://gluetun:8080.
   qbittorrent:
     image: lscr.io/linuxserver/qbittorrent:latest
     container_name: qbittorrent
@@ -7,10 +9,10 @@ services:
       - no-new-privileges:true
     restart: unless-stopped
     profiles: ["apps", "downloads", "all"]
-    networks:
-      - default
-    ports:
-      - "$QBITTORRENT_PORT:8080"
+    network_mode: "service:gluetun"
+    depends_on:
+      gluetun:
+        condition: service_healthy
     volumes:
       - $DOCKERDIR/appdata/qbittorrent:/config
       - $DOWNLOADSDIR:/data/downloads # Ensure that downloads folder is set to /data/downloads in qBittorrent
@@ -20,8 +22,3 @@ services:
       PGID: $PGID
       # QB_WEBUI_PORT: $QBITTORRENT_PORT
       UMASK: 002
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.qbittorrent.rule=Host(`qbittorrent.${LOCAL_DOMAIN}`)
-      - traefik.http.routers.qbittorrent.entrypoints=web
-      - traefik.http.services.qbittorrent.loadbalancer.server.port=8080
