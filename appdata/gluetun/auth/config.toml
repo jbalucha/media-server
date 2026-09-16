@@ -1,0 +1,8 @@
+# Gluetun control server access (v3.40+ denies everything by default).
+# The control server is NOT published to the host, so only containers on
+# media-server_default can reach it. This role exposes just the two
+# read-only routes the homepage widget needs, no token required.
+[[roles]]
+name = "homepage"
+routes = ["GET /v1/publicip/ip", "GET /v1/openvpn/status"]
+auth = "none"

@@ -106,6 +106,17 @@
           username: "{{HOMEPAGE_VAR_QBITTORRENT_USERNAME}}"
           password: "{{HOMEPAGE_VAR_QBITTORRENT_PASSWORD}}"
           enableLeechProgress: true
+    - Gluetun:
+        icon: gluetun.png
+        href: http://qbittorrent.{{HOMEPAGE_VAR_LOCAL_DOMAIN}}
+        description: PIA VPN tunnel (qBittorrent)
+        server: my-docker
+        container: gluetun
+        # Reads the tunnel's public IP from gluetun's control server; the
+        # read-only role lives in appdata/gluetun/auth/config.toml
+        widget:
+          type: gluetun
+          url: http://gluetun:8000
     # - SABnzbd: # disabled - enable together with compose/sabnzbd.yml
     #     icon: sabnzbd.png
     #     href: http://sabnzbd.{{HOMEPAGE_VAR_LOCAL_DOMAIN}}

@@ -79,6 +79,9 @@ services:
     profiles: ["apps", "all"]
     networks:
       - default
+    # node-exporter runs in the host netns, so reach it via the docker gateway
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     command:
       - --config.file=/etc/prometheus/prometheus.yml
       - --storage.tsdb.path=/prometheus
@@ -112,15 +115,18 @@ services:
       - /dev/disk/:/dev/disk:ro
 
   # ---------------- node-exporter - host metrics ----------------
+  # Host network namespace, otherwise the netdev collector only sees the
+  # container's own veth and every network graph reads zero. Prometheus
+  # reaches it through host.docker.internal instead of a container name.
   node-exporter:
     image: quay.io/prometheus/node-exporter:latest
     container_name: node-exporter
     restart: unless-stopped
     profiles: ["apps", "all"]
-    networks:
-      - default
+    network_mode: host
     pid: host
     command:
       - --path.rootfs=/host
+      - --web.listen-address=:9100
     volumes:
       - /:/host:ro,rslave

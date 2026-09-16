@@ -35,3 +35,5 @@ appdata/grafana/*
 !appdata/gluetun/
 appdata/gluetun/*
 !appdata/gluetun/port-sync.sh
+!appdata/gluetun/auth/
+!appdata/gluetun/auth/config.toml
