@@ -195,6 +195,48 @@
         widget:
           type: prometheus
           url: http://prometheus:9090
+    - cAdvisor:
+        icon: mdi-chart-box-outline
+        href: http://cadvisor.{{HOMEPAGE_VAR_LOCAL_DOMAIN}}
+        description: Live Container Resources
+        server: my-docker
+        container: cadvisor
+    - Alloy:
+        icon: grafana.png
+        href: http://alloy.{{HOMEPAGE_VAR_LOCAL_DOMAIN}}
+        description: Log Collector Pipeline
+        server: my-docker
+        container: alloy
+
+# No web UI of their own, listed so a dead one is obvious at a glance.
+# Status dots come from the docker socket proxy (docker.yaml).
+- Infrastructure:
+    - dnsmasq:
+        icon: mdi-dns
+        description: Local DNS (offline fallback)
+        server: my-docker
+        container: dnsmasq
+    - Loki:
+        icon: grafana.png
+        description: Log Store (query via Grafana)
+        server: my-docker
+        container: loki
+    - node-exporter:
+        icon: prometheus.png
+        description: Host Metrics Exporter
+        server: my-docker
+        container: node-exporter
+    - Socket Proxy:
+        icon: docker.png
+        description: Filtered Docker API
+        server: my-docker
+        container: socket-proxy
+    - FlareSolverr:
+        icon: mdi-cloud-lock-outline
+        href: http://flaresolverr.{{HOMEPAGE_VAR_LOCAL_DOMAIN}}
+        description: Cloudflare Solver (used by Prowlarr)
+        server: my-docker
+        container: flaresolverr
 
 - Home:
     - Home Assistant:

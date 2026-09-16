@@ -78,6 +78,9 @@ with local DNS so every service is reachable by name instead of IP:port.
 | Traefik dashboard | http://traefik.janba-minipc.duckdns.org | — |
 | Grafana | http://grafana.janba-minipc.duckdns.org | :3001 |
 | Prometheus | http://prometheus.janba-minipc.duckdns.org | — |
+| cAdvisor | http://cadvisor.janba-minipc.duckdns.org | — |
+| Alloy | http://alloy.janba-minipc.duckdns.org | — |
+| FlareSolverr | http://flaresolverr.janba-minipc.duckdns.org | :8191 |
 
 Plex apps (TV, mobile) discover the server directly via port 32400 as usual;
 the proxy hostname is for the web UI.
@@ -126,7 +129,11 @@ Do not use Tailscale Funnel with these services — several of them
   unauthenticated — LAN only.
 - Dozzle has no authentication — anyone on the LAN can read container logs.
   Keep that in mind for what gets logged, or add authentication
-  (https://dozzle.dev/guide/authentication).
+  (https://dozzle.dev/guide/authentication). The same applies to cAdvisor
+  and Alloy, which expose read-only diagnostics with no login.
+- Traefik only routes to containers Docker reports as healthy. A failing
+  healthcheck therefore looks like a 404, not a 502 (that is what hid the
+  qBittorrent route when gluetun's DNS broke).
 - Change all default passwords, keep containers updated.
 
 ## 📝 License

@@ -67,6 +67,11 @@ services:
       - $DOCKERDIR/appdata/alloy/data:/data
     depends_on:
       - loki
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.alloy.rule=Host(`alloy.${LOCAL_DOMAIN}`)
+      - traefik.http.routers.alloy.entrypoints=web
+      - traefik.http.services.alloy.loadbalancer.server.port=12345
 
   # ---------------- Prometheus - metrics (7 day retention) ----------------
   prometheus:
@@ -113,6 +118,11 @@ services:
       - /sys:/sys:ro
       - /var/lib/docker/:/var/lib/docker:ro
       - /dev/disk/:/dev/disk:ro
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.cadvisor.rule=Host(`cadvisor.${LOCAL_DOMAIN}`)
+      - traefik.http.routers.cadvisor.entrypoints=web
+      - traefik.http.services.cadvisor.loadbalancer.server.port=8080
 
   # ---------------- node-exporter - host metrics ----------------
   # Host network namespace, otherwise the netdev collector only sees the
