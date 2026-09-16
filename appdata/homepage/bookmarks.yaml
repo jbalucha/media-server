@@ -1,0 +1,6 @@
+---
+# Intentionally empty. Homepage ships a default Developer/Social/Entertainment
+# block (Github, Reddit, YouTube) that renders under the services, and this
+# file overrides it. Add groups here if you ever want bookmarks back:
+# https://gethomepage.dev/configs/bookmarks
+[]
