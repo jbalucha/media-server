@@ -21,9 +21,22 @@ services:
       - OPENVPN_USER=${PIA_USERNAME:-}
       - OPENVPN_PASSWORD=${PIA_PASSWORD:-}
       - SERVER_REGIONS=${PIA_REGION:-Netherlands}
-      # PIA port forwarding (better seeding); forwarded port appears in
-      # /tmp/gluetun/forwarded_port inside the container
+      # PIA port forwarding (needed for incoming peers, else speeds collapse).
+      # port-sync.sh pushes the assigned port into qBittorrent on every
+      # (re)connect, because PIA hands out a different one each time.
       - VPN_PORT_FORWARDING=on
+      - VPN_PORT_FORWARDING_UP_COMMAND=/bin/sh /gluetun/port-sync.sh {{PORTS}}
+      - QBT_USER=${QBITTORRENT_USERNAME:-}
+      - QBT_PASS=${QBITTORRENT_PASSWORD:-}
+      # Plain DNS through the tunnel. Gluetun's default DNS-over-TLS proxy
+      # kept timing out against Cloudflare, which broke tracker lookups (slow
+      # downloads) and failed the healthcheck - and an unhealthy container
+      # makes Traefik drop the qbittorrent route entirely.
+      - DOT=off
+      - DNS_ADDRESS=1.1.1.1
+      # Refresh PIA's server list daily; a stale list breaks port forwarding
+      # ("API IP address not found") after PIA rotates its endpoints.
+      - UPDATER_PERIOD=24h
       - TZ=$TZ
     volumes:
       - $DOCKERDIR/appdata/gluetun:/gluetun

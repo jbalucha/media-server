@@ -32,3 +32,6 @@ appdata/grafana/*
 
 # OS noise
 .DS_Store
+!appdata/gluetun/
+appdata/gluetun/*
+!appdata/gluetun/port-sync.sh
